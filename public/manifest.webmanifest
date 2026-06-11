@@ -1,6 +1,6 @@
 {
-  "name": "BillSplit",
-  "short_name": "BillSplit",
+  "name": "BillSplitter",
+  "short_name": "BillSplitter",
   "description": "Photograph a restaurant bill, let friends claim what they had, and get paid back with a QR code.",
   "id": "/",
   "start_url": "/",

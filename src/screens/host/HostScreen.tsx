@@ -63,7 +63,7 @@ export function Gone() {
         <div className="h-sm">This session doesn’t exist (anymore)</div>
         <span className="muted">Sessions expire automatically after 7 days</span>
       </div>
-      <a className="btn full" href="/" style={{ textDecoration: 'none' }}>
+      <a className="btn full" href="/new" style={{ textDecoration: 'none' }}>
         Start a new one
       </a>
     </div>

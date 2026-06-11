@@ -3,6 +3,7 @@ import { ToastProvider } from './components/Toast';
 import { CreateScreen } from './screens/Create';
 import { HostScreen } from './screens/host/HostScreen';
 import { JoinScreen } from './screens/Join';
+import { LandingScreen } from './screens/Landing';
 import { ParticipantScreen } from './screens/Participant';
 
 function JRedirect() {
@@ -17,7 +18,8 @@ export default function App() {
     <ToastProvider>
       <div className="app-col">
         <Routes>
-          <Route path="/" element={<CreateScreen />} />
+          <Route path="/" element={<LandingScreen />} />
+          <Route path="/new" element={<CreateScreen />} />
           <Route path="/s/:id" element={<HostScreen />} />
           <Route path="/s/:id/me" element={<ParticipantScreen />} />
           <Route path="/join/:id" element={<JoinScreen />} />

@@ -21,10 +21,11 @@ test('host scans & shares, participant joins & claims live, close → EPC QR →
   const host = await hostCtx.newPage();
   const part = await partCtx.newPage();
 
-  // ---- H1: scan & set up ----
+  // ---- H0: landing → H1: scan & set up ----
   await host.goto('/');
-  await host.getByPlaceholder('Friday @ Bellini').fill('Friday @ Bellini');
-  await host.getByPlaceholder('Sam').fill('Sam');
+  await host.getByRole('link', { name: 'Start a session' }).click();
+  await host.getByPlaceholder('Dinner at Italian').fill('Friday @ Bellini');
+  await host.getByPlaceholder('Your Name').fill('Sam');
   await host.getByPlaceholder('BE68 5390 0754 7034').fill('BE68 5390 0754 7034');
   await host.locator('input[type=file]').setInputFiles({ name: 'bill.jpg', mimeType: 'image/jpeg', buffer: TINY_JPEG });
   await expect(host.getByText('✓ Bill read · 10 items')).toBeVisible({ timeout: 20_000 });

@@ -130,11 +130,11 @@ export function CreateScreen() {
       <div className="label">Fill these while it reads</div>
       <label className="field fill">
         <span className="lab">Session name</span>
-        <input value={sessionName} onChange={(e) => setSessionName(e.target.value)} placeholder="Friday @ Bellini" maxLength={60} />
+        <input value={sessionName} onChange={(e) => setSessionName(e.target.value)} placeholder="Dinner at Italian" maxLength={60} />
       </label>
       <label className="field fill">
         <span className="lab">Your name (host)</span>
-        <input value={hostName} onChange={(e) => setHostName(e.target.value)} placeholder="Sam" maxLength={40} />
+        <input value={hostName} onChange={(e) => setHostName(e.target.value)} placeholder="Your Name" maxLength={40} />
       </label>
       <label className={`field fill ${iban && !ibanOk ? 'invalid' : ''}`}>
         <span className="lab">IBAN — you’re paid back here</span>

@@ -1,0 +1,5 @@
+# Session URLs are capability links — keep them out of search indexes.
+User-agent: *
+Disallow: /s/
+Disallow: /join/
+Disallow: /j/

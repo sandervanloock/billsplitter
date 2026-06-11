@@ -5,6 +5,7 @@ import { createSession, updateSessionFields, writeExtractedItems } from '../lib/
 import { extractBill, isLowConfidence, type ExtractResult } from '../lib/extract';
 import { useAuthUser } from '../lib/hooks';
 import { formatCents, formatIban, validateIban } from '../lib/money';
+import { savedIban, savedName, saveProfile } from '../lib/profile';
 
 type Scan = { state: 'idle' } | { state: 'reading' } | { state: 'done'; result: ExtractResult } | { state: 'error'; message: string };
 
@@ -15,8 +16,8 @@ export function CreateScreen() {
   const fileInput = useRef<HTMLInputElement>(null);
   const [scan, setScan] = useState<Scan>({ state: 'idle' });
   const [sessionName, setSessionName] = useState('');
-  const [hostName, setHostName] = useState(localStorage.getItem('billsplit:hostName') ?? '');
-  const [iban, setIban] = useState(localStorage.getItem('billsplit:iban') ?? '');
+  const [hostName, setHostName] = useState(savedName());
+  const [iban, setIban] = useState(savedIban());
   const [busy, setBusy] = useState(false);
 
   const ibanOk = validateIban(iban);
@@ -36,8 +37,7 @@ export function CreateScreen() {
     if (!ready) return;
     setBusy(true);
     try {
-      localStorage.setItem('billsplit:hostName', hostName.trim());
-      localStorage.setItem('billsplit:iban', iban);
+      saveProfile({ name: hostName, iban });
       const id = await createSession({ name: sessionName.trim(), hostName: hostName.trim(), iban });
       const result = scan.state === 'done' ? scan.result : undefined;
       if (result && result.items.length > 0) {

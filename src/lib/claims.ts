@@ -11,6 +11,7 @@ import {
 import { auth, db } from '../firebase';
 import { itemRef, itemsRef, participantRef, sessionRef } from './fb';
 import { SESSION_TTL_DAYS } from './model';
+import { saveProfile } from './profile';
 
 export class NoneLeftError extends Error {
   constructor() {
@@ -128,6 +129,7 @@ export async function joinSession(sessionId: string, displayName: string, pid?: 
     expireAt: ttl(),
   });
   localStorage.setItem(`billsplit:${sessionId}:name`, displayName);
+  saveProfile({ name: displayName });
 }
 
 export async function addManualParticipant(sessionId: string, displayName: string): Promise<string> {

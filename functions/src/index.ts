@@ -28,7 +28,7 @@ server.get('/j/:id', async (req, res) => {
     res.status(400).send('Bad session id');
     return;
   }
-  let title = 'BillSplit';
+  let title = 'BillSplitter';
   let description = 'Pick what you had and pay your share.';
   try {
     const snap = await getFirestore().doc(`sessions/${id}`).get();

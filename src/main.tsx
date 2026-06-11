@@ -11,3 +11,11 @@ createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </StrictMode>,
 );
+
+// Registered after load so it never competes with the app for bandwidth;
+// dev is excluded so the emulator/vite proxy is never cached.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}

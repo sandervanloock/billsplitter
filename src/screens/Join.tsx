@@ -6,6 +6,7 @@ import { auth } from '../firebase';
 import { joinSession } from '../lib/claims';
 import { useAuthUser, useParticipants, useSession } from '../lib/hooks';
 import { formatCents } from '../lib/money';
+import { usePageTitle } from '../lib/title';
 import { Gone, Loading } from './host/HostScreen';
 
 /** P1 — session preview + join with just a name. */
@@ -18,6 +19,7 @@ export function JoinScreen() {
   const toast = useToast();
   const [name, setName] = useState(localStorage.getItem(`billsplit:${id}:name`) ?? localStorage.getItem('billsplit:hostName') ?? '');
   const [busy, setBusy] = useState(false);
+  usePageTitle(session?.name ? `Join ${session.name}` : undefined);
 
   if (!user || session === undefined || participants === undefined) return <Loading />;
   if (session === null) return <Gone />;

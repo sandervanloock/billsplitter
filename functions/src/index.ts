@@ -52,6 +52,8 @@ server.get('/j/:id', async (req, res) => {
 <meta property="og:url" content="${origin}/j/${id}">
 <meta property="og:image" content="${origin}/og.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" href="${origin}/favicon.svg" type="image/svg+xml">
 <script>location.replace('/join/${id}');</script>
 </head><body>
 <p>Joining… <a href="/join/${id}">tap here if nothing happens</a></p>

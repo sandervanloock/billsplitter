@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { useAuthUser, useItems, useParticipants, useSession } from '../../lib/hooks';
+import { usePageTitle } from '../../lib/title';
 import { Collect } from './Collect';
 import { Distribute } from './Distribute';
 import { Overview } from './Overview';
@@ -16,6 +17,7 @@ export function HostScreen() {
   const items = useItems(id, !!user);
   const participants = useParticipants(id, !!user);
   const [step, setStep] = useState<OpenStep>('share');
+  usePageTitle(session?.name);
 
   if (!user || session === undefined) return <Loading />;
   if (session === null) return <Gone />;

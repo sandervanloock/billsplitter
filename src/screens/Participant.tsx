@@ -7,6 +7,7 @@ import { markPaid, NoneLeftError, setClaim } from '../lib/claims';
 import { useAuthUser, useItems, useParticipants, useSession } from '../lib/hooks';
 import type { Item, Participant, Session } from '../lib/model';
 import { buildEpcPayload, formatCents, formatIban, sanitizeEpcText } from '../lib/money';
+import { usePageTitle } from '../lib/title';
 import { computeOwed, mySharedShareCents } from '../lib/totals';
 import { Gone, Loading } from './host/HostScreen';
 
@@ -17,6 +18,7 @@ export function ParticipantScreen() {
   const items = useItems(id, !!user);
   const participants = useParticipants(id, !!user);
   const [doneLocal, setDoneLocal] = useState(() => localStorage.getItem(`billsplit:${id}:done`) === '1');
+  usePageTitle(session?.name);
 
   if (!user || session === undefined) return <Loading />;
   if (session === null) return <Gone />;

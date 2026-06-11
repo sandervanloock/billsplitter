@@ -1,0 +1,21 @@
+{
+  "name": "billsplit-functions",
+  "private": true,
+  "engines": {
+    "node": "22"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "firebase-admin": "^13.4.0",
+    "firebase-functions": "^6.3.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "typescript": "~5.8.3"
+  }
+}

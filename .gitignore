@@ -1,0 +1,17 @@
+node_modules
+dist
+functions/lib
+functions/node_modules
+*.log
+.firebase
+.env.production
+.env.*
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+pglite-debug.log
+test-results
+playwright-report
+.DS_Store
+.idea
+/billsplitter.iml

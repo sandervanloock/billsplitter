@@ -1,15 +1,19 @@
+import { Fragment, useState } from 'react';
 import { Avatar } from '../../components/Avatar';
+import { QR } from '../../components/QR';
 import { useToast } from '../../components/Toast';
 import { markPaid, markSettled } from '../../lib/claims';
 import type { Participant, Session } from '../../lib/model';
 import { joinUrl } from '../../lib/model';
 import { formatCents } from '../../lib/money';
+import { epcPayloadFor } from '../../lib/payment';
 import { reminderMessage, shareText } from '../../lib/share';
 import { splitOrder } from '../../lib/totals';
 
 /** H6 — collected progress, paid tags, remind/nudge via share sheet. */
 export function Collect({ session, participants }: { session: Session; participants: Participant[] }) {
   const toast = useToast();
+  const [qrFor, setQrFor] = useState<string | null>(null);
   const ordered = splitOrder(participants);
   const debtors = ordered.filter((p) => p.id !== session.hostUid);
   const totalOwed = debtors.reduce((s, p) => s + (p.owedCents ?? 0), 0);
@@ -43,41 +47,60 @@ export function Collect({ session, participants }: { session: Session; participa
       <div className="box" style={{ padding: '4px 12px' }}>
         {ordered.map((p, i) => {
           const isHost = p.id === session.hostUid;
+          const showQr = !isHost && !p.paid && !p.isManual && (p.owedCents ?? 0) > 0;
           return (
-            <div className="item" key={p.id}>
-              <Avatar name={p.displayName} index={i} />
-              <span className="nm">
-                {p.displayName}
-                {isHost && <span className="muted"> you</span>}
-                {!isHost && !p.paid && <span className="muted"> {formatCents(p.owedCents ?? 0)}</span>}
-              </span>
-              {isHost ? (
-                <span className="muted">—</span>
-              ) : p.paid ? (
-                <span
-                  className="tag ok"
-                  style={p.isManual ? { cursor: 'pointer' } : undefined}
-                  onClick={p.isManual ? () => markPaid(session.id, p.id, false).catch((e) => toast(e.message)) : undefined}
-                >
-                  paid
+            <Fragment key={p.id}>
+              <div className="item">
+                <Avatar name={p.displayName} index={i} />
+                <span className="nm">
+                  {p.displayName}
+                  {isHost && <span className="muted"> you</span>}
+                  {!isHost && !p.paid && <span className="muted"> {formatCents(p.owedCents ?? 0)}</span>}
                 </span>
-              ) : (
-                <span className="row" style={{ gap: 6 }}>
-                  {p.isManual && (
-                    <button
-                      type="button"
-                      className="btn sm"
-                      onClick={() => markPaid(session.id, p.id, true).catch((e) => toast(e.message))}
-                    >
-                      Got cash ✓
+                {isHost ? (
+                  <span className="muted">—</span>
+                ) : p.paid ? (
+                  <span
+                    className="tag ok"
+                    style={p.isManual ? { cursor: 'pointer' } : undefined}
+                    onClick={p.isManual ? () => markPaid(session.id, p.id, false).catch((e) => toast(e.message)) : undefined}
+                  >
+                    paid
+                  </span>
+                ) : (
+                  <span className="row" style={{ gap: 6 }}>
+                    {p.isManual && (
+                      <button
+                        type="button"
+                        className="btn sm"
+                        onClick={() => markPaid(session.id, p.id, true).catch((e) => toast(e.message))}
+                      >
+                        Got cash ✓
+                      </button>
+                    )}
+                    {showQr && (
+                      <button
+                        type="button"
+                        className="btn sm ghost"
+                        onClick={() => setQrFor(qrFor === p.id ? null : p.id)}
+                      >
+                        QR
+                      </button>
+                    )}
+                    <button type="button" className="btn sm ghost" onClick={() => remind(p)}>
+                      Remind
                     </button>
-                  )}
-                  <button type="button" className="btn sm ghost" onClick={() => remind(p)}>
-                    Remind
-                  </button>
-                </span>
+                  </span>
+                )}
+              </div>
+              {showQr && qrFor === p.id && (
+                <div className="center" style={{ padding: '10px 0' }}>
+                  <QR text={epcPayloadFor(session, p)} size={150} label={`Payment QR for ${p.displayName}`} />
+                  <div className="h-sm">{formatCents(p.owedCents ?? 0)}</div>
+                  <span className="muted">{p.displayName} scans this with their banking app</span>
+                </div>
               )}
-            </div>
+            </Fragment>
           );
         })}
       </div>

@@ -29,6 +29,9 @@ java process: `lsof -ti :8080 | xargs kill`.
   payload + charset sanitizer, IBAN mod-97. No Firebase imports; unit-tested.
 - `src/lib/totals.ts` — pure per-person totals: direct claims + shared-pool share.
   Split order = joinedAt then id, so every client renders identical cents.
+- `src/lib/payment.ts` — pure: payment reference + EPC payload built from
+  Session/Participant; shared by the participant Pay screen and the host Collect
+  QR so both render identical payloads. Unit-tested.
 - `src/lib/model.ts` — plain TS shapes (Session/Item/Participant), no Firebase.
 - `src/lib/fb.ts` — doc refs + snapshot→model mappers (`serverTimestamps: 'estimate'`).
 - `src/lib/claims.ts` — all writes: createSession, joinSession, setClaim (race-safe

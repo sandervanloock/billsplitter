@@ -6,7 +6,9 @@ import { useToast } from '../components/Toast';
 import { markPaid, NoneLeftError, setClaim } from '../lib/claims';
 import { useAuthUser, useItems, useParticipants, useSession } from '../lib/hooks';
 import type { Item, Participant, Session } from '../lib/model';
-import { buildEpcPayload, formatCents, formatIban, sanitizeEpcText } from '../lib/money';
+import { formatCents, formatIban } from '../lib/money';
+import { epcPayloadFor, paymentReference } from '../lib/payment';
+import { shareText } from '../lib/share';
 import { usePageTitle } from '../lib/title';
 import { computeOwed, mySharedShareCents } from '../lib/totals';
 import { Gone, Loading } from './host/HostScreen';
@@ -247,13 +249,8 @@ function Pay({
   const toast = useToast();
   const [busy, setBusy] = useState(false);
   const owed = me.owedCents ?? 0;
-  const reference = sanitizeEpcText(`${session.name} - ${me.displayName}`, 140);
-  const payload = buildEpcPayload({
-    beneficiaryName: session.hostName,
-    iban: session.iban,
-    amountCents: owed,
-    remittance: reference,
-  });
+  const reference = paymentReference(session.name, me.displayName);
+  const payload = epcPayloadFor(session, me);
 
   async function paid() {
     setBusy(true);
@@ -278,11 +275,28 @@ function Pay({
       </div>
 
       <QR text={payload} size={150} label="Payment QR" />
-      <div className="center muted">Scan with your banking app (KBC, ING, Belfius…)</div>
+      <div className="center muted">
+        Scan with your <strong>banking app</strong> (KBC, ING, Belfius…) — a normal camera app won’t recognize it.
+      </div>
+      <div className="center muted" style={{ fontSize: 13 }}>
+        On {session.hostName}’s phone? Ask them to show your QR under <em>Getting paid back</em>.
+      </div>
 
       <CopyField label="To IBAN" value={formatIban(session.iban)} copyValue={session.iban.replace(/\s+/g, '')} />
       <CopyField label="Amount" value={formatCents(owed, false)} />
       <CopyField label="Reference" value={reference} />
+
+      <button
+        type="button"
+        className="btn ghost full"
+        onClick={() =>
+          shareText(
+            `Pay ${session.hostName} ${formatCents(owed)} for "${session.name}"\nIBAN: ${formatIban(session.iban)}\nReference: ${reference}`,
+          )
+        }
+      >
+        Share payment details
+      </button>
 
       <details>
         <summary className="muted" style={{ cursor: 'pointer' }}>

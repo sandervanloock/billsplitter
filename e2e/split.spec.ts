@@ -23,7 +23,7 @@ test('host scans & shares, participant joins & claims live, close → EPC QR →
 
   // ---- H0: landing → H1: scan & set up ----
   await host.goto('/');
-  await host.getByRole('link', { name: 'Start a session' }).click();
+  await host.getByRole('link', { name: 'Start a session' }).first().click();
   await host.getByPlaceholder('Dinner at Italian').fill('Friday @ Bellini');
   await host.getByPlaceholder('Your Name').fill('Sam');
   await host.getByPlaceholder('BE68 5390 0754 7034').fill('BE68 5390 0754 7034');
